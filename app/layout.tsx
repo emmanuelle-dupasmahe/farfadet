@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header"; // 1. On importe ton menu ici
+import Header from "@/components/Header";
+import EventBanner from "@/components/EventBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,7 +14,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// 2. On met à jour les métadonnées pour le référencement du site
+// pour le référencement du site
 export const metadata: Metadata = {
   title: "Les Farfadets Vertigo",
   description: "Association Multi-sports, sports-adaptés et bien-être.",
@@ -25,12 +26,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="fr" // 3. On passe la langue en français au lieu de "en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="fr" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
-        <Header /> {/* 4. On place le Header juste avant le contenu de la page */}
+        <Header />
+
+        {/* Le bandeau est placé  sous le header rose */}
+        <EventBanner />
+
         <main className="flex-grow">
           {children}
         </main>
