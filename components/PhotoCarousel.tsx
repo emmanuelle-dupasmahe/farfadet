@@ -30,6 +30,7 @@ export default function PhotoCarousel({ images }: PhotoCarouselProps) {
                                 src={img.src}
                                 alt={img.alt}
                                 fill
+                                sizes="(max-width: 768px) 100vw, 768px"
                                 className="object-cover"
                             />
                             {img.caption && (
