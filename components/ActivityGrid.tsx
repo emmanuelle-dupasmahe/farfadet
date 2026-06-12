@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import {
     Mountain,
     Waves,
@@ -16,6 +17,7 @@ const activities = [
         description: "Prendre de la hauteur et défier ses limites en toute sécurité.",
         icon: <Mountain className="w-8 h-8" />,
         color: "bg-pink-600",
+        href: "/escalade"
     },
     {
         title: "Kayak & Paddle",
@@ -49,7 +51,7 @@ const activities = [
     },
     {
         title: "Secourisme",
-        description: "Apprendre les gestes qui sauvent (PSC1).",
+        description: "Apprendre les gestes qui sauvent (GQS).",
         icon: <HeartPulse className="w-8 h-8" />,
         color: "bg-pink-600",
     },
@@ -73,9 +75,10 @@ export default function ActivityGrid() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {activities.map((activity, index) => (
-                    <div
+                    <Link
                         key={index}
-                        className="group p-6 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                        href={activity.href || "#"} // Utilise le lien, ou met "#" par défaut s'il n'y en a pas encore
+                        className="group block p-6 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                     >
                         <div className={`${activity.color} text-white w-14 h-14 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                             {activity.icon}
@@ -86,7 +89,7 @@ export default function ActivityGrid() {
                         <p className="text-slate-600 text-sm leading-relaxed">
                             {activity.description}
                         </p>
-                    </div>
+                    </Link>
                 ))}
             </div>
         </section>

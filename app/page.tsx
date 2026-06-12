@@ -1,3 +1,4 @@
+import ActivityGrid from "@/components/ActivityGrid";
 export default function Home() {
   return (
     <main className="min-h-screen">
@@ -12,7 +13,11 @@ export default function Home() {
       </section>
 
       {/* Reste de tes sections (Tuiles d'activités, etc.) */}
-      <section className="h-[1000px] bg-white p-10">
+      {/* La grille des activités */}
+      <ActivityGrid />
+      <section className="py-20 bg-blue-950 text-white text-center">
+        <h2 className="text-2xl font-bold">Prêt à nous rejoindre ?</h2>
+        <p className="mt-4">Contactez-nous au 06 20 78 49 14</p>
       </section>
     </main>
   );
