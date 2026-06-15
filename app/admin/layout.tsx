@@ -1,6 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, Image as ImageIcon, Megaphone, Settings, LogOut } from 'lucide-react';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { LayoutDashboard, Image as ImageIcon, Megaphone, Settings, LogOut, FileText, Layers } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -25,13 +27,42 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <Megaphone size={20} />
                         Bandeau Événements
                     </Link>
+                    <Link
+                        href="/admin/configuration"
+                        className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 text-slate-300 transition-colors"
+                    >
+                        <Settings size={20} />
+                        Configuration globale
+                    </Link>
+                    <Link href="/admin/cards" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-900 transition-colors">
+                        <Layers size={20} />
+                        Cartes d'activités
+                    </Link>
+
+                    <Link
+                        href="/admin/pages"
+                        className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 text-slate-300 transition-colors"
+                    >
+                        <FileText size={20} />
+                        Textes des pages
+                    </Link>
                 </nav>
 
                 <div className="p-4 border-t border-blue-900">
-                    <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-500/20 text-slate-300 hover:text-red-400 transition-colors">
-                        <LogOut size={20} />
-                        Retour au site
-                    </Link>
+                    <form action={async () => {
+                        'use server';
+                        const cookieStore = await cookies();
+                        cookieStore.delete('admin_session'); // On supprime le cookie
+                        redirect('/login'); // On renvoie au login
+                    }}>
+                        <button
+                            type="submit"
+                            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-500/20 text-slate-300 hover:text-red-400 transition-colors"
+                        >
+                            <LogOut size={20} />
+                            Déconnexion
+                        </button>
+                    </form>
                 </div>
             </aside>
 
