@@ -1,14 +1,19 @@
 import React from 'react';
-import PhotoCarousel from "@/components/PhotoCarousel";
 import Link from 'next/link';
 import { Mountain, Users, Calendar, Phone, ArrowLeft } from 'lucide-react';
+import PhotoCarousel from "@/components/PhotoCarousel";
+import pool from "@/lib/db"; // Importation de la connexion à la base de données
 
-export default function EscaladePage() {
-    const escaladePhotos = [
-        { src: "/photos/escalade/grimpe1.jpg", alt: "Enfant qui grimpe", caption: "Initiation pour les 9-16 ans" },
-        { src: "/photos/escalade/grimpe2.jpg", alt: "Escalade sur voie avec baudrier", caption: "Défier ses limites" },
-        { src: "/photos/escalade/grimpe3.jpg", alt: "Après l'effort", caption: "Après l'effort" },
-    ];
+export default async function EscaladePage() {
+    // 1. Récupération des vraies photos depuis MariaDB/MySQL
+    let escaladePhotos = [];
+    try {
+        const [rows] = await pool.query('SELECT * FROM photos WHERE category = ? ORDER BY id DESC', ['escalade']) as any;
+        escaladePhotos = rows;
+    } catch (error) {
+        console.error("Erreur lors de la récupération des photos :", error);
+    }
+
     return (
         <div className="min-h-screen bg-slate-50 pb-20">
 
@@ -27,11 +32,19 @@ export default function EscaladePage() {
                     <p className="text-xl text-slate-300 max-w-2xl">
                         Prendre de la hauteur et défier ses limites en toute sécurité, dans un cadre adapté à tous les niveaux.
                     </p>
-                    <PhotoCarousel images={escaladePhotos} />
                 </div>
             </section>
 
-            {/* 2. Contenu principal */}
+            {/* 2. Le carrousel de photos dynamique (affiché uniquement s'il y a des images) */}
+            {escaladePhotos.length > 0 ? (
+                <PhotoCarousel images={escaladePhotos} />
+            ) : (
+                <div className="max-w-3xl mx-auto my-8 text-center text-sm text-slate-400 italic">
+                    Aucune image d'illustration disponible pour le moment.
+                </div>
+            )}
+
+            {/* 3. Contenu principal */}
             <main className="max-w-4xl mx-auto px-4 -mt-8">
                 <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-8 md:p-12">
 
@@ -75,7 +88,7 @@ export default function EscaladePage() {
                         </p>
                     </div>
 
-                    {/* 3. Appel à l'action (Contact) */}
+                    {/* 4. Appel à l'action (Contact) */}
                     <div className="mt-12 bg-pink-50 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-pink-100">
                         <div>
                             <h3 className="text-xl font-bold text-pink-600 mb-2">Envie de participer ?</h3>
