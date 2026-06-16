@@ -4,8 +4,8 @@ import Link from "next/link";
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  // 1. Valeurs par défaut (au cas où la BDD soit vide lors des premiers tests)
-  let heroTitle = "Vient défier ton mental !";
+  // 1. Valeurs par défaut
+  let heroTitle = "Viens défier ton mental !";
   let heroSubtitle = "Association Multi-sports, sports-adaptés et bien-être au service de l'inclusion et du handicap.";
 
   // 2. Récupérer les textes configurés pour le Hero de l'accueil
@@ -25,7 +25,7 @@ export default async function Home() {
     console.error("Erreur lors de la récupération des textes de l'accueil :", error);
   }
 
-  // 3. Récupérer les cartes d'activités (permet de séparer SRAV et Vélo par exemple)
+  // 3. Récupérer les cartes d'activités
   let cards = [];
   try {
     const [cardRows] = await pool.query('SELECT * FROM home_cards ORDER BY id ASC') as any;
@@ -53,9 +53,18 @@ export default async function Home() {
         <h1 className="text-5xl md:text-7xl font-extrabold text-pink-600 mb-6 drop-shadow-sm">
           {heroTitle}
         </h1>
-        <p className="text-xl md:text-2xl text-slate-700 max-w-3xl mx-auto font-medium leading-relaxed">
+        <p className="text-xl md:text-2xl text-slate-700 max-w-3xl mx-auto font-medium leading-relaxed mb-8">
           {heroSubtitle}
         </p>
+
+        {/* BLOC DU LOGO PARFAITEMENT PLACÉ DANS LE RENDU */}
+        <div className="flex justify-center mt-6 drop-shadow-sm">
+          <img
+            src="/farfadet.png"
+            alt="Logo Les Farfadets Vertigo"
+            className="w-56 h-auto object-contain animate-fade-in"
+          />
+        </div>
       </section>
 
       {/* Grille des cartes d'activités dynamique */}
