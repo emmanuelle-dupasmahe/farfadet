@@ -23,7 +23,7 @@ export default function HeaderClient({ menuItems }: { menuItems: MenuItem[] }) {
                 {/* Logo cliquable */}
                 <Link href="/" className="flex items-center gap-4 group" onClick={closeMobileMenu}>
                     <Image
-                        src="/logo_farfadet.png"
+                        src="/farfadet.png"
                         alt="Logo Les Farfadets Vertigo"
                         width={70}
                         height={70}
