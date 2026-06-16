@@ -27,12 +27,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <Megaphone size={20} />
                         Bandeau Événements
                     </Link>
+                    {/* Gestion du Menu du Header */}
+                    <Link href="/admin/menu" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 text-slate-300 transition-colors">
+                        <FileText size={20} />
+                        Menu du Header
+                    </Link>
+
+                    {/* Gestion du Footer */}
                     <Link
                         href="/admin/configuration"
                         className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 text-slate-300 transition-colors"
                     >
                         <Settings size={20} />
-                        Configuration globale
+                        Gestion du Footer
                     </Link>
                     <Link href="/admin/cards" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-900 transition-colors">
                         <Layers size={20} />

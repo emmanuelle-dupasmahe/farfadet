@@ -12,6 +12,9 @@ export default async function AdminPhotosPage() {
   // 1. Récupérer toutes les photos
   const [rows] = await pool.query('SELECT * FROM photos ORDER BY id DESC') as any;
 
+  // EXTRA : Récupérer dynamiquement toutes les pages pour le menu déroulant
+  const [pages] = await pool.query('SELECT slug, title FROM custom_pages ORDER BY title ASC') as any;
+
   // 2. Action du serveur pour ajouter une photo
   async function addPhoto(formData: FormData) {
     'use server';
@@ -19,29 +22,28 @@ export default async function AdminPhotosPage() {
     const file = formData.get('file') as File;
     const alt = formData.get('alt') as string;
     const caption = formData.get('caption') as string;
-    const category = formData.get('category') as string; // Nouvelle donnée !
+    const category = formData.get('category') as string;
 
     if (!file || file.size === 0 || !alt || !category) return;
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const uniqueFilename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
     const uploadDir = path.join(process.cwd(), 'public/uploads');
-    
+
     await fs.mkdir(uploadDir, { recursive: true });
-    
+
     const filepath = path.join(uploadDir, uniqueFilename);
     await fs.writeFile(filepath, buffer);
 
     const src = `/uploads/${uniqueFilename}`;
-    
-    // On ajoute la catégorie dans la requête SQL
+
     await pool.query(
       'INSERT INTO photos (src, alt, caption, category) VALUES (?, ?, ?, ?)',
       [src, alt, caption || null, category]
     );
 
     revalidatePath('/admin/photos');
-    revalidatePath(`/${category}`); // On rafraîchit dynamiquement la page concernée
+    revalidatePath(`/${category}`);
   }
 
   // 3. Action du serveur pour supprimer une photo
@@ -51,7 +53,7 @@ export default async function AdminPhotosPage() {
     const id = formData.get('id');
     const src = formData.get('src') as string;
     const category = formData.get('category') as string;
-    
+
     if (!id) return;
 
     await pool.query('DELETE FROM photos WHERE id = ?', [id]);
@@ -71,7 +73,7 @@ export default async function AdminPhotosPage() {
 
   return (
     <div className="p-8 max-w-6xl mx-auto">
-      
+
       <div className="flex items-center gap-3 mb-8">
         <div className="bg-pink-600 p-2 rounded-xl text-white">
           <ImageIcon size={28} />
@@ -80,20 +82,20 @@ export default async function AdminPhotosPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
+
         {/* Formulaire d'ajout */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 h-fit">
           <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
             <PlusCircle size={20} className="text-pink-600" />
             Ajouter une photo
           </h2>
-          
+
           <form action={addPhoto} className="space-y-4">
-            
-            {/* Nouveau champ : Le menu déroulant des catégories */}
+
+            {/* Menu déroulant DYNAMIQUE rattaché aux pages réelles */}
             <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg">
               <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
-                <Tag size={16} className="text-pink-600"/>
+                <Tag size={16} className="text-pink-600" />
                 Activité concernée
               </label>
               <select
@@ -101,9 +103,11 @@ export default async function AdminPhotosPage() {
                 required
                 className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-slate-800 text-sm bg-white cursor-pointer"
               >
-                <option value="escalade">🧗‍♀️ Escalade</option>
-                <option value="kayak">🛶 Kayak</option>
-                <option value="secourisme">⛑️ Secourisme & Bien-être</option>
+                {pages.map((p: any) => (
+                  <option key={p.slug} value={p.slug}>
+                    📌 {p.title}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -157,7 +161,7 @@ export default async function AdminPhotosPage() {
         {/* Liste des photos */}
         <div className="lg:col-span-2 space-y-4">
           <h2 className="text-xl font-bold text-slate-800">Photos actuellement en ligne ({rows.length})</h2>
-          
+
           {rows.length === 0 ? (
             <div className="bg-white p-8 rounded-2xl text-center border border-slate-200 text-slate-500">
               Aucune photo n'a encore été ajoutée.
@@ -166,7 +170,7 @@ export default async function AdminPhotosPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {rows.map((photo: any) => (
                 <div key={photo.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
-                  
+
                   <div className="relative h-44 w-full bg-slate-100">
                     <Image
                       src={photo.src}
@@ -175,7 +179,6 @@ export default async function AdminPhotosPage() {
                       sizes="(max-width: 768px) 100vw, 300px"
                       className="object-cover"
                     />
-                    {/* Badge de catégorie affiché par-dessus l'image */}
                     <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-slate-800 uppercase shadow-sm border border-white/50">
                       {photo.category}
                     </div>
@@ -188,7 +191,7 @@ export default async function AdminPhotosPage() {
                         <p className="text-xs text-slate-500 mt-1 italic">« {photo.caption} »</p>
                       )}
                     </div>
-                    
+
                     <form action={deletePhoto} className="border-t border-slate-100 pt-3 flex justify-end">
                       <input type="hidden" name="id" value={photo.id} />
                       <input type="hidden" name="src" value={photo.src} />
