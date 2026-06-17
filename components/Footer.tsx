@@ -109,9 +109,19 @@ export default async function Footer() {
                     </div>
                 </div>
 
-                <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-blue-900 text-center text-slate-400 text-sm">
+                {/* --- ZONE MODIFIÉE POUR LE LIEN ADMIN DISCRET --- */}
+                <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-blue-900 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-400">
                     <p>{copyright}</p>
+
+                    <Link
+                        href="/admin"
+                        className="text-slate-500 hover:text-pink-500 transition-colors"
+                        title="Espace administration"
+                    >
+                        Accès Équipe
+                    </Link>
                 </div>
+                {/* ------------------------------------------------ */}
             </div>
         </footer>
     );

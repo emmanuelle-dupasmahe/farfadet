@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { LayoutDashboard, Image as ImageIcon, Megaphone, Settings, LogOut, FileText, Layers } from 'lucide-react';
+import { LayoutDashboard, Image as ImageIcon, Megaphone, Settings, LogOut, FileText, Layers, ShieldCheck } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -19,39 +19,40 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <LayoutDashboard size={20} />
                         Tableau de bord
                     </Link>
+                    {/* Nom changé en Médiathèque pour plus de cohérence */}
                     <Link href="/admin/photos" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-900 transition-colors">
                         <ImageIcon size={20} />
-                        Gestion des Photos
+                        Médiathèque
                     </Link>
                     <Link href="/admin/evenements" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-900 transition-colors">
                         <Megaphone size={20} />
                         Bandeau Événements
                     </Link>
-                    {/* Gestion du Menu du Header */}
+
                     <Link href="/admin/menu" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 text-slate-300 transition-colors">
                         <FileText size={20} />
                         Menu du Header
                     </Link>
 
-                    {/* Gestion du Footer */}
-                    <Link
-                        href="/admin/configuration"
-                        className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 text-slate-300 transition-colors"
-                    >
+                    <Link href="/admin/configuration" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 text-slate-300 transition-colors">
                         <Settings size={20} />
                         Gestion du Footer
                     </Link>
+
                     <Link href="/admin/cards" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-900 transition-colors">
                         <Layers size={20} />
                         Cartes d'activités
                     </Link>
 
-                    <Link
-                        href="/admin/pages"
-                        className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 text-slate-300 transition-colors"
-                    >
+                    <Link href="/admin/pages" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 text-slate-300 transition-colors">
                         <FileText size={20} />
                         Textes des pages
+                    </Link>
+
+                    {/* LIEN VERS L'ÉQUIPE  */}
+                    <Link href="/admin/equipe" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 text-slate-300 transition-colors mt-4 border-t border-blue-900 pt-4">
+                        <ShieldCheck size={20} />
+                        Gestion de l'Équipe
                     </Link>
                 </nav>
 
@@ -59,8 +60,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <form action={async () => {
                         'use server';
                         const cookieStore = await cookies();
-                        cookieStore.delete('admin_session'); // On supprime le cookie
-                        redirect('/login'); // On renvoie au login
+                        cookieStore.delete('admin_session');
+                        redirect('/login');
                     }}>
                         <button
                             type="submit"
