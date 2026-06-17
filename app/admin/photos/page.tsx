@@ -5,6 +5,7 @@ import { Trash2, PlusCircle, Image as ImageIcon, Tag } from 'lucide-react';
 import Image from 'next/image';
 import { promises as fs } from 'fs';
 import path from 'path';
+import sharp from 'sharp'; // Import de la librairie d'optimisation d'images
 
 export const dynamic = 'force-dynamic';
 
@@ -27,13 +28,20 @@ export default async function AdminPhotosPage() {
     if (!file || file.size === 0 || !alt || !category) return;
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const uniqueFilename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
+
+    // On force l'extension en .webp pour l'optimisation
+    const uniqueFilename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '').split('.')[0]}.webp`;
     const uploadDir = path.join(process.cwd(), 'public/uploads');
 
     await fs.mkdir(uploadDir, { recursive: true });
-
     const filepath = path.join(uploadDir, uniqueFilename);
-    await fs.writeFile(filepath, buffer);
+
+    // OPTIMISATION AVEC SHARP
+    // On redimensionne à 1200px de large max, on garde les proportions, et on convertit en WebP
+    await sharp(buffer)
+      .resize({ width: 1200, withoutEnlargement: true })
+      .webp({ quality: 80 })
+      .toFile(filepath);
 
     const src = `/uploads/${uniqueFilename}`;
 
@@ -171,6 +179,7 @@ export default async function AdminPhotosPage() {
               {rows.map((photo: any) => (
                 <div key={photo.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
 
+                  {/* AJOUT DE 'unoptimized' ICI POUR LES MINIATURES DE L'ADMIN */}
                   <div className="relative h-44 w-full bg-slate-100">
                     <Image
                       src={photo.src}
@@ -178,6 +187,7 @@ export default async function AdminPhotosPage() {
                       fill
                       sizes="(max-width: 768px) 100vw, 300px"
                       className="object-cover"
+                      unoptimized // Demande à Next.js de ne pas recalculer cette miniature
                     />
                     <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-slate-800 uppercase shadow-sm border border-white/50">
                       {photo.category}
