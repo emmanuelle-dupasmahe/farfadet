@@ -1,5 +1,7 @@
 import React from 'react';
 import pool from '@/lib/db';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,10 +14,17 @@ export default async function AccessibilitePage() {
         console.error("Erreur base de données accessibilité :", error);
     }
 
-    const mainEmail = settings?.email || "Lesfarfadetsvertigo@gmail.com";
-
     return (
         <main className="max-w-4xl mx-auto px-4 py-16 text-slate-800">
+            {/* Bouton Retour Accueil */}
+            <Link
+                href="/"
+                className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-pink-600 font-medium mb-4 transition-colors group"
+            >
+                <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                Retour à l'accueil
+            </Link>
+
             <h1 className="text-4xl font-extrabold text-blue-950 mb-8 border-b pb-4">Déclaration d'Accessibilité</h1>
 
             <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
@@ -25,7 +34,7 @@ export default async function AccessibilitePage() {
                     </p>
                 ) : (
                     <p className="text-slate-400 italic">
-                        Le contenu des mentions légales est en cours de rédaction.
+                        La déclaration d'accessibilité est en cours de rédaction.
                     </p>
                 )}
             </div>
