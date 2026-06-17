@@ -73,7 +73,7 @@ export default async function AdminSettingsPage() {
                 <div className="bg-blue-600 p-2 rounded-xl text-white">
                     <Settings size={28} />
                 </div>
-                <h1 className="text-3xl font-bold text-slate-800">Configuration Générale</h1>
+                <h1 className="text-3xl font-bold text-slate-800">Gestion Footer</h1>
             </div>
 
             <form action={updateSettings} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
