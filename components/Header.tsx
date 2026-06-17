@@ -6,9 +6,16 @@ export const dynamic = 'force-dynamic';
 
 export default async function Header() {
     let menuItems = [];
+    let associationLogo = null; // Variable pour stocker le chemin du logo
 
     try {
-        // Récupération de tous les éléments du menu ordonnés par position
+        // 1. Récupération du logo de l'association depuis la configuration globale
+        const [settingsRows] = await pool.query('SELECT association_logo FROM site_settings WHERE id = 1') as any;
+        if (settingsRows.length > 0) {
+            associationLogo = settingsRows[0].association_logo;
+        }
+
+        // 2. Récupération de tous les éléments du menu ordonnés par position
         const [rows] = await pool.query('SELECT * FROM header_menu ORDER BY position ASC') as any;
 
         // Filtrage des menus principaux (ceux qui n'ont pas de parent)
@@ -20,7 +27,7 @@ export default async function Header() {
             children: rows.filter((child: any) => child.parent_id === parent.id)
         }));
     } catch (error) {
-        console.error("Erreur lors de la récupération du menu Header :", error);
+        console.error("Erreur lors de la récupération du menu ou du logo Header :", error);
 
         // Menu de secours (Fallback) pour éviter le crash du site si la BDD est inaccessible
         menuItems = [
@@ -36,5 +43,6 @@ export default async function Header() {
         ];
     }
 
-    return <HeaderClient menuItems={menuItems} />;
+    // On transmet les menuItems ET le logo dynamique récupéré au composant client
+    return <HeaderClient menuItems={menuItems} logoSrc={associationLogo} />;
 }

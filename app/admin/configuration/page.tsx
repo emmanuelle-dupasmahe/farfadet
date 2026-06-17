@@ -1,7 +1,7 @@
 import React from 'react';
 import pool from '@/lib/db';
 import { revalidatePath } from 'next/cache';
-import { Settings, Save, Phone, FileText, ShieldAlert, CheckCircle } from 'lucide-react';
+import { Settings, Save, Phone, FileText, ShieldAlert, CheckCircle, UploadCloud } from 'lucide-react';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { redirect } from 'next/navigation';
@@ -33,15 +33,28 @@ export default async function AdminSettingsPage(props: {
         const partner_ffsa_url = formData.get('partner_ffsa_url') as string;
         const partner_ufolep_url = formData.get('partner_ufolep_url') as string;
 
+        // Récupération des fichiers logos (Nouveau : assocFile)
+        const assocFile = formData.get('assoc_logo_file') as File;
         const ffsaFile = formData.get('ffsa_logo_file') as File;
         const ufolepFile = formData.get('ufolep_logo_file') as File;
 
+        // Récupération des anciens chemins (Nouveau : assocLogoPath)
+        let assocLogoPath = formData.get('current_assoc_logo') as string;
         let ffsaLogoPath = formData.get('current_ffsa_logo') as string;
         let ufolepLogoPath = formData.get('current_ufolep_logo') as string;
 
         const uploadDir = path.join(process.cwd(), 'public/uploads');
         await fs.mkdir(uploadDir, { recursive: true });
 
+        // Traitement du logo de l'Association
+        if (assocFile && assocFile.size > 0) {
+            const buffer = Buffer.from(await assocFile.arrayBuffer());
+            const filename = `logo-assoc-${Date.now()}-${assocFile.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
+            await fs.writeFile(path.join(uploadDir, filename), buffer);
+            assocLogoPath = `/uploads/${filename}`;
+        }
+
+        // Traitement du logo FFSA
         if (ffsaFile && ffsaFile.size > 0) {
             const buffer = Buffer.from(await ffsaFile.arrayBuffer());
             const filename = `logo-ffsa-${Date.now()}-${ffsaFile.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
@@ -49,6 +62,7 @@ export default async function AdminSettingsPage(props: {
             ffsaLogoPath = `/uploads/${filename}`;
         }
 
+        // Traitement du logo UFOLEP
         if (ufolepFile && ufolepFile.size > 0) {
             const buffer = Buffer.from(await ufolepFile.arrayBuffer());
             const filename = `logo-ufolep-${Date.now()}-${ufolepFile.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
@@ -56,16 +70,17 @@ export default async function AdminSettingsPage(props: {
             ufolepLogoPath = `/uploads/${filename}`;
         }
 
+        // Requête SQL mise à jour avec association_logo
         await pool.query(
             `UPDATE site_settings SET 
                 phone = ?, phone_regis = ?, email = ?, facebook_url = ?, instagram_url = ?, 
                 copyright_text = ?, footer_description = ?, partner_ffsa_url = ?, partner_ufolep_url = ?,
-                partner_ffsa_logo = ?, partner_ufolep_logo = ? 
+                association_logo = ?, partner_ffsa_logo = ?, partner_ufolep_logo = ? 
             WHERE id = 1`,
             [
                 phone, phone_regis, email, facebook_url, instagram_url,
                 copyright_text, footer_description, partner_ffsa_url, partner_ufolep_url,
-                ffsaLogoPath, ufolepLogoPath
+                assocLogoPath, ffsaLogoPath, ufolepLogoPath
             ]
         );
 
@@ -133,6 +148,8 @@ export default async function AdminSettingsPage(props: {
             {/* --- CONTENU ONGLET 1 : COORDONNÉES ET LOGOS --- */}
             {activeTab === 'coordonnees' && (
                 <form action={updateSettings} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                    {/* Sécurité : conserve l'ancien logo si pas de modification */}
+                    <input type="hidden" name="current_assoc_logo" value={settings?.association_logo || ''} />
                     <input type="hidden" name="current_ffsa_logo" value={settings?.partner_ffsa_logo || '/Logo-FFSA_Q_HORIZONTAL.png'} />
                     <input type="hidden" name="current_ufolep_logo" value={settings?.partner_ufolep_logo || '/logo_ufolep.png'} />
 
@@ -163,6 +180,19 @@ export default async function AdminSettingsPage(props: {
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-1">Texte de présentation (Footer)</label>
                             <textarea name="footer_description" rows={3} defaultValue={settings?.footer_description || ''} className="w-full px-3 py-2 border rounded-lg text-sm text-slate-800" />
+                        </div>
+
+                        {/* TROISIÈME BLOC : LOGO PRINCIPAL ASSOCIATION */}
+                        <div className="p-4 bg-pink-50/40 rounded-xl border border-pink-100 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="flex flex-col justify-center">
+                                <span className="text-sm font-bold text-pink-950 flex items-center gap-1.5 mb-1">
+                                    <UploadCloud size={16} className="text-pink-600" /> Logo de l'Association
+                                </span>
+                                <span className="text-xs text-slate-500">Ce logo sera utilisé principalement dans la barre de navigation et la page d'accueil du site.</span>
+                            </div>
+                            <div className="flex items-center">
+                                <input type="file" name="assoc_logo_file" accept="image/*" className="w-full px-3 py-1.5 border rounded-lg text-sm bg-white cursor-pointer text-slate-800" />
+                            </div>
                         </div>
 
                         {/* Section FFSA */}

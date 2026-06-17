@@ -34,15 +34,22 @@ export default async function Home() {
     console.error("Erreur lors de la récupération des cartes :", error);
   }
 
-  // 4. Récupérer le numéro de téléphone dynamique de Sarah
+  // 4. Récupérer le numéro de téléphone et le logo depuis la configuration globale
   let contactPhone = "06 20 78 49 14";
+  let associationLogo = "/farfadet.png"; // Fallback vers ton image d'origine
+
   try {
     const [settingsRows] = await pool.query('SELECT * FROM site_settings WHERE id = 1') as any;
-    if (settingsRows.length > 0 && settingsRows[0].phone) {
-      contactPhone = settingsRows[0].phone;
+    if (settingsRows.length > 0) {
+      if (settingsRows[0].phone) {
+        contactPhone = settingsRows[0].phone;
+      }
+      if (settingsRows[0].association_logo) {
+        associationLogo = settingsRows[0].association_logo;
+      }
     }
   } catch (error) {
-    console.error("Erreur lors de la récupération du numéro de téléphone :", error);
+    console.error("Erreur lors de la récupération des paramètres globale :", error);
   }
 
   return (
@@ -61,10 +68,10 @@ export default async function Home() {
       {/* SECTION DES CARTES AVEC LE LOGO EN ARRIÈRE-PLAN */}
       <section className="relative pt-2 pb-12 px-4 max-w-7xl mx-auto mt-24 md:mt-16">
 
-        {/* LE LOGO  */}
+        {/* LE LOGO (Positionnement initial préservé à 100 %) */}
         <div className="absolute -top-36 md:-top-53 left-1/2 -translate-x-1/2 z-0 drop-shadow-lg pointer-events-none">
           <img
-            src="/farfadet.png"
+            src={associationLogo}
             alt="Logo Les Farfadets Vertigo"
             className="w-40 md:w-56 h-auto object-contain animate-fade-in"
           />

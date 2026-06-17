@@ -12,22 +12,32 @@ interface MenuItem {
     children: { label: string; url: string | null }[];
 }
 
-export default function HeaderClient({ menuItems }: { menuItems: MenuItem[] }) {
+// Ajout de logoSrc dans les propriétés du composant
+interface HeaderClientProps {
+    menuItems: MenuItem[];
+    logoSrc?: string | null;
+}
+
+export default function HeaderClient({ menuItems, logoSrc }: HeaderClientProps) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
+    // Si aucun logo n'est défini en base, on utilise l'image locale par défaut
+    const currentLogo = logoSrc || "/farfadet.png";
 
     return (
         <header className="sticky top-0 z-50 w-full bg-pink-600 text-white shadow-md">
             <div className="max-w-7xl mx-auto flex items-center justify-between p-4">
 
-                {/* Logo cliquable */}
+                {/* Logo cliquable de l'association */}
                 <Link href="/" className="flex items-center gap-4 group" onClick={closeMobileMenu}>
                     <Image
-                        src="/farfadet.png"
+                        src={currentLogo} // Source dynamique issue de la BDD
                         alt="Logo Les Farfadets Vertigo"
                         width={70}
                         height={70}
                         className="object-contain w-auto h-auto max-h-16 transition-transform group-hover:scale-105"
+                        priority // Recommandé par Next.js pour le logo du Header (LCP)
                     />
                     <span className="text-xl md:text-2xl font-bold tracking-tight">
                         Les Farfadets Vertigo
@@ -48,7 +58,6 @@ export default function HeaderClient({ menuItems }: { menuItems: MenuItem[] }) {
                 <nav aria-label="Menu principal" className="hidden md:block">
                     <ul className="flex gap-8 font-semibold items-center">
                         {menuItems.map((item) => {
-                            // Si l'élément a des enfants, on génère un menu déroulant
                             if (item.children && item.children.length > 0) {
                                 return (
                                     <li key={item.id} className="relative group">
@@ -69,7 +78,6 @@ export default function HeaderClient({ menuItems }: { menuItems: MenuItem[] }) {
                                     </li>
                                 );
                             }
-                            // Sinon, on génère un lien simple
                             return (
                                 <li key={item.id}>
                                     <Link href={item.url || '/'} className="hover:text-pink-200 transition-colors py-2">
