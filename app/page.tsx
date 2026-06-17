@@ -48,7 +48,7 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-slate-50">
 
-      {/* Section Hero totalement dynamique */}
+      {/* Section Hero (Texte seulement) */}
       <section className="w-full bg-white py-24 px-4 text-center border-b border-slate-100">
         <h1 className="text-5xl md:text-7xl font-extrabold text-pink-600 mb-6 drop-shadow-sm">
           {heroTitle}
@@ -56,25 +56,27 @@ export default async function Home() {
         <p className="text-xl md:text-2xl text-slate-700 max-w-3xl mx-auto font-medium leading-relaxed mb-8">
           {heroSubtitle}
         </p>
+      </section>
 
-        {/* BLOC DU LOGO PARFAITEMENT PLACÉ DANS LE RENDU */}
-        <div className="flex justify-center mt-6 drop-shadow-sm">
+      {/* SECTION DES CARTES AVEC LE LOGO EN ARRIÈRE-PLAN */}
+      <section className="relative pt-2 pb-12 px-4 max-w-7xl mx-auto mt-24 md:mt-16">
+
+        {/* LE LOGO  */}
+        <div className="absolute -top-36 md:-top-53 left-1/2 -translate-x-1/2 z-0 drop-shadow-lg pointer-events-none">
           <img
             src="/farfadet.png"
             alt="Logo Les Farfadets Vertigo"
-            className="w-56 h-auto object-contain animate-fade-in"
+            className="w-40 md:w-56 h-auto object-contain animate-fade-in"
           />
         </div>
-      </section>
 
-      {/* Grille des cartes d'activités dynamique */}
-      <section className="py-16 px-4 max-w-7xl mx-auto">
+        {/* LA GRILLE */}
         {cards.length === 0 ? (
           <div className="bg-white p-8 rounded-2xl text-center border border-slate-200 text-slate-500 italic">
             Aucune carte d'activité n'est configurée en base de données.
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
             {cards.map((card: any) => (
               <div
                 key={card.id}
