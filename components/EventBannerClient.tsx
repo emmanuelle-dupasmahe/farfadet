@@ -4,8 +4,9 @@ import React, { useState, useCallback, useEffect } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { Pause, Play, Calendar, ExternalLink } from 'lucide-react';
+import Link from 'next/link'; // Importation nécessaire pour la page tampon
 
-// On reçoit maintenant un tableau d'événements
+// On reçoit toujours notre tableau d'événements
 export default function EventBannerClient({ dbEvents }: { dbEvents: any[] }) {
     // Si la base est vide, on cache le bandeau
     if (!dbEvents || dbEvents.length === 0) return null;
@@ -48,32 +49,52 @@ export default function EventBannerClient({ dbEvents }: { dbEvents: any[] }) {
                 <div className="overflow-hidden flex-grow" ref={emblaRef}>
                     <div className="flex">
                         {/* On crée une slide pour chaque événement */}
-                        {dbEvents.map((dbEvent) => (
-                            <div key={dbEvent.id} className="flex-[0_0_100%] min-w-0 flex items-center justify-between gap-4 md:px-8">
+                        {dbEvents.map((dbEvent) => {
+                            // Sécurité : On détecte si le lien configuré est une page interne (comme /inscriptions)
+                            const isInternalLink = dbEvent.link_url?.startsWith('/');
 
-                                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6">
-                                    {dbEvent.date_text && (
-                                        <span className="flex items-center gap-2 text-pink-400 font-semibold uppercase tracking-wider text-sm">
-                                            <Calendar size={18} />
-                                            {dbEvent.date_text}
-                                        </span>
-                                    )}
-                                    <div>
-                                        <strong className="text-lg md:text-xl font-bold">{dbEvent.main_text}</strong>
+                            return (
+                                <div key={dbEvent.id} className="flex-[0_0_100%] min-w-0 flex items-center justify-between gap-4 md:px-8">
+
+                                    <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6">
+                                        {dbEvent.date_text && (
+                                            <span className="flex items-center gap-2 text-pink-400 font-semibold uppercase tracking-wider text-sm">
+                                                <Calendar size={18} />
+                                                {dbEvent.date_text}
+                                            </span>
+                                        )}
+                                        <div>
+                                            <strong className="text-lg md:text-xl font-bold">{dbEvent.main_text}</strong>
+                                        </div>
                                     </div>
+
+                                    {dbEvent.link_url && dbEvent.link_text && (
+                                        <>
+                                            {isInternalLink ? (
+                                                /* --- CAS 1 : Lien interne vers ta page tampon --- */
+                                                <Link
+                                                    href={dbEvent.link_url}
+                                                    className="shrink-0 flex items-center gap-2 bg-pink-600 hover:bg-pink-700 transition-colors text-white px-4 py-2 rounded-full font-bold text-sm"
+                                                >
+                                                    {dbEvent.link_text}
+                                                </Link>
+                                            ) : (
+                                                /* --- CAS 2 : Lien externe classique (ex: HelloAsso direct, Facebook, etc.) --- */
+                                                <a
+                                                    href={dbEvent.link_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="shrink-0 flex items-center gap-2 bg-pink-600 hover:bg-pink-700 transition-colors text-white px-4 py-2 rounded-full font-bold text-sm"
+                                                >
+                                                    {dbEvent.link_text} <ExternalLink size={16} />
+                                                </a>
+                                            )}
+                                        </>
+                                    )}
+
                                 </div>
-
-                                {dbEvent.link_url && dbEvent.link_text && (
-                                    <a
-                                        href={dbEvent.link_url}
-                                        className="shrink-0 flex items-center gap-2 bg-pink-600 hover:bg-pink-700 transition-colors text-white px-4 py-2 rounded-full font-bold text-sm"
-                                    >
-                                        {dbEvent.link_text} <ExternalLink size={16} />
-                                    </a>
-                                )}
-
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
 
