@@ -3,6 +3,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --color-pink-600: rgba(252, 28, 143, 1);
+
 }
 
 @theme inline {

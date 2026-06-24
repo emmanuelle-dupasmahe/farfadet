@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/request';
+import type { NextRequest } from 'next/server'; // Import propre depuis next/server
 
 export function proxy(request: NextRequest) {
     // 1. Récupérer le cookie de session
@@ -17,8 +17,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
 }
 
-// Optionnel : On définit sur quelles routes le middleware doit s'exécuter
-// Ici, on lui dit de surveiller tout ce qui commence par /admin
+// On applique le filtre sur la route admin
 export const config = {
     matcher: '/admin/:path*',
 };
