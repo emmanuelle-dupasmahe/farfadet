@@ -94,7 +94,7 @@ export default async function DynamicActivityPage({ params }: PageProps) {
 
             {/* FORMULAIRE DES INSCRIPTIONS */}
             {attachedEvent && (
-                <section className="max-w-5xl mx-auto px-4 pb-12">
+                <section id="inscription" className="max-w-5xl mx-auto px-4 pb-12">
                     <ActivityEventRegistration event={attachedEvent} />
                 </section>
             )}
