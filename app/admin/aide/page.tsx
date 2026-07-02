@@ -23,7 +23,7 @@ export default function AdminHelpPage() {
                 <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
                     <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-2">
                         <Megaphone size={20} className="text-blue-600" />
-                        Bandeau d'Actualité (Sarah & Régis)
+                        Bandeau d'Actualité 
                     </h2>
                     <p className="text-slate-600 text-sm leading-relaxed">
                         Cette section sert à publier des alertes défilantes en haut du site. Seuls les <strong>3 messages les plus récents</strong> s'affichent sur la page d'accueil.
@@ -33,7 +33,7 @@ export default function AdminHelpPage() {
                             <Link size={14} /> Astuce : Liens vers un formulaire interne
                         </h3>
                         <p className="text-slate-700 text-xs leading-relaxed">
-                            Si Régis a configuré un stage (ex: Escalade) et que vous voulez que le bouton du bandeau envoie l'utilisateur directement dessus sans défiler :
+                            Si un stage ou une journée ont été configurés (ex: Escalade) et que vous voulez que le bouton du bandeau envoie l'utilisateur directement dessus sans défiler :
                         </p>
                         <ul className="text-xs text-slate-700 list-disc list-inside mt-1 font-medium space-y-1">
                             <li><strong>Texte du bouton :</strong> <span className="text-pink-600">S'inscrire au stage</span></li>
@@ -42,14 +42,14 @@ export default function AdminHelpPage() {
                         <p className="text-[10px] text-slate-500 italic mt-1">
                             Remplacez <span className="font-mono">/escalade</span> par le slug du sport désiré. L'ajout de <span className="font-mono">#inscription</span> descend automatiquement la page au formulaire.
                         </p>
-                    </div>
+                    </div> 
                 </div>
 
                 {/* FICHE 2 : PLANIFICATION DE STAGES */}
                 <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
                     <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-2">
                         <Calendar size={20} className="text-pink-600" />
-                        Planifier un Stage / Sortie (Régis)
+                        Planifier un Stage / Sortie 
                     </h2>
                     <p className="text-slate-600 text-sm leading-relaxed">
                         Pour proposer une journée spéciale ou un stage sur une page de sport :
@@ -69,7 +69,7 @@ export default function AdminHelpPage() {
                 <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
                     <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-2">
                         <FileText size={20} className="text-emerald-600" />
-                        Modifier les Textes (Sarah)
+                        Modifier les Textes 
                     </h2>
                     <p className="text-slate-600 text-sm leading-relaxed">
                         Toutes les pages de sports et rubriques thématiques sont modifiables sans code depuis l'onglet <strong>Textes des pages</strong>.
