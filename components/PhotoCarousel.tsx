@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import useEmblaCarousel from 'embla-carousel-carousel-react';
+import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -19,11 +19,17 @@ export default function PhotoCarousel({ images }: PhotoCarouselProps) {
     const scrollNext = React.useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
 
     return (
-        <div className="relative group max-w-3xl mx-auto my-12 px-4">
+        <div
+            className="relative group max-w-3xl mx-auto my-12 px-4"
+            onContextMenu={(e) => e.preventDefault()} // Empêche le menu contextuel (clic droit) sur tout le carrousel
+        >
             <div className="overflow-hidden rounded-3xl shadow-xl border-4 border-white" ref={emblaRef}>
                 <div className="flex">
                     {images.map((img, index) => (
-                        <div className="flex-[0_0_100%] min-w-0 relative h-[200px] md:h-[350px]" key={index}>
+                        <div
+                            className="flex-[0_0_100%] min-w-0 relative h-[200px] md:h-[350px]"
+                            key={index}
+                        >
                             {/* Protection : La combinaison de ces classes bloque la sélection et le drag */}
                             <Image
                                 src={img.src}
@@ -33,6 +39,9 @@ export default function PhotoCarousel({ images }: PhotoCarouselProps) {
                                 className="object-cover select-none [-webkit-user-drag:none]"
                                 draggable={false}
                             />
+
+                            {/* Couche de protection transparente pour bloquer les clics directs sur l'image */}
+                            <div className="absolute inset-0 z-10 pointer-events-none"></div>
 
                             {img.caption && (
                                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 z-10 pointer-events-none">

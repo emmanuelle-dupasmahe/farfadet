@@ -35,15 +35,20 @@ export default function PageCarousel({ images }: { images: string[] }) {
             className="relative w-full max-w-3xl mx-auto h-[220px] md:h-[350px] rounded-3xl overflow-hidden group shadow-md mb-8 bg-slate-100 border-4 border-white"
             onMouseEnter={() => setIsHovered(true)}  // Pause quand la souris entre
             onMouseLeave={() => setIsHovered(false)} // Reprise quand la souris sort
+            onContextMenu={(e) => e.preventDefault()} // Empêche le menu contextuel (clic droit)
         >
             <Image
                 src={images[currentIndex]}
                 alt={`Illustration ${currentIndex + 1}`}
                 fill
-                className="object-cover transition-all duration-500"
+                className="object-cover transition-all duration-500 select-none [-webkit-user-drag:none]"
                 sizes="(max-width: 768px) 100vw, 768px"
                 priority
+                draggable={false}
             />
+
+            {/* Couche de protection transparente */}
+            <div className="absolute inset-0 z-10 pointer-events-none"></div>
 
             {/* Flèches de navigation (uniquement s'il y a plusieurs images) */}
             {images.length > 1 && (
