@@ -1,5 +1,5 @@
 import React from 'react';
-import { HelpCircle, Bookmark, Megaphone, Calendar, Link, ArrowRight, Layers, FileText } from 'lucide-react';
+import { HelpCircle, Bookmark, Megaphone, Calendar, Link, ArrowRight, Layers, FileText, Users, CreditCard } from 'lucide-react';
 
 export default function AdminHelpPage() {
     return (
@@ -93,6 +93,30 @@ export default function AdminHelpPage() {
                     </p>
                     <p className="text-xs text-slate-500 leading-relaxed bg-amber-50/50 border border-amber-100 p-3 rounded-xl">
                         Chaque bloc redirige l'utilisateur vers une page pilier du site. Veillez à ce que l'URL saisie corresponde bien à une page active (ex: <span className="font-mono">/secourisme</span>).
+                    </p>
+                </div>
+
+                {/* FICHE 5 : SUIVI DES INSCRIPTIONS */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+                    <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-2">
+                        <Users size={20} className="text-violet-600" />
+                        Suivi des Inscriptions
+                    </h2>
+                    <p className="text-slate-600 text-sm leading-relaxed">
+                        Gérez les inscriptions et paiements directement depuis le menu principal de l'administration.
+                    </p>
+                    <ul className="text-xs text-slate-600 space-y-3 bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+                        <li className="flex gap-2">
+                            <Users size={16} className="text-blue-500 shrink-0" />
+                            <span><strong>Inscriptions Site :</strong> Retrouvez la liste des personnes inscrites via les formulaires gratuits de vos événements sur le site.</span>
+                        </li>
+                        <li className="flex gap-2">
+                            <CreditCard size={16} className="text-emerald-500 shrink-0" />
+                            <span><strong>Inscriptions HelloAsso :</strong> Visualisez l'historique de tous les paiements (billetteries, dons) validés sur la plateforme HelloAsso.</span>
+                        </li>
+                    </ul>
+                    <p className="text-xs text-slate-500 italic">
+                        💡 La remontée des paiements HelloAsso se fait automatiquement. Dès qu'une transaction est validée de leur côté, elle apparaît dans votre tableau.
                     </p>
                 </div>
 
