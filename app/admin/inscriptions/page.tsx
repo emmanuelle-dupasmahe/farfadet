@@ -4,6 +4,8 @@ import pool from '@/lib/db';
 import Link from 'next/link';
 import { Users, ArrowRight } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function InscriptionsHomePage() {
     // On récupère tous les événements
     const [events]: any = await pool.query('SELECT * FROM activity_events ORDER BY created_at DESC');

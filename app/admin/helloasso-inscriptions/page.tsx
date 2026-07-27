@@ -3,6 +3,9 @@ import React from 'react';
 import pool from '@/lib/db';
 import { Mail, Euro, Calendar, User } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
+
 export default async function HelloAssoInscriptionsPage() {
     // On récupère les paiements HelloAsso triés par date d'inscription
     const [registrations]: any = await pool.query(

@@ -4,6 +4,8 @@ import pool from '@/lib/db';
 import { Phone, Mail } from 'lucide-react';
 import PrintButton from '@/components/PrintButton'; // 1. On importe le nouveau bouton Client
 
+export const dynamic = 'force-dynamic';
+
 interface Props {
     params: Promise<{ eventId: string }>;
 }
