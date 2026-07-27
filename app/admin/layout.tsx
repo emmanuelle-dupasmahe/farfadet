@@ -1,7 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { LayoutDashboard, Image as ImageIcon, Megaphone, Settings, LogOut, FileText, Layers, ShieldCheck, HelpCircle } from 'lucide-react';
+// Ajout de l'icône Users pour les inscriptions du site
+import { LayoutDashboard, Image as ImageIcon, Megaphone, Settings, LogOut, FileText, Layers, ShieldCheck, HelpCircle, CreditCard, Users } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -29,7 +30,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         Bandeau Événements
                     </Link>
 
-                    <Link href="/admin/menu" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 text-slate-300 transition-colors">
+                    {/* NOUVEAU : Inscriptions directes depuis le site */}
+                    <Link href="/admin/inscriptions" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-900 transition-colors text-blue-300 font-medium">
+                        <Users size={20} />
+                        Inscriptions Site
+                    </Link>
+
+                    {/* Inscriptions HelloAsso */}
+                    <Link href="/admin/helloasso-inscriptions" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-900 transition-colors text-emerald-400 font-medium">
+                        <CreditCard size={20} />
+                        Inscriptions HelloAsso
+                    </Link>
+
+                    <Link href="/admin/menu" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 text-slate-300 transition-colors mt-2">
                         <FileText size={20} />
                         Menu du Header
                     </Link>
@@ -54,7 +67,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         Gestion de l'Équipe
                     </Link>
 
-                    {/* NOUVEAU : LIEN VERS LA RUBRIQUE AIDE */}
                     <Link href="/admin/aide" className="flex items-center gap-3 px-4 py-3 rounded-lg bg-pink-600/10 hover:bg-pink-600 border border-pink-500/20 text-pink-400 hover:text-white transition-colors">
                         <HelpCircle size={20} />
                         Guide d'Utilisation
@@ -64,7 +76,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <div className="p-4 border-t border-blue-900">
                     <form action={async () => {
                         'use server';
-                        // 1. On importe "cookies" dynamiquement à l'intérieur pour que Next.js ne le détecte pas au build
                         const { cookies } = await import('next/headers');
                         const cookieStore = await cookies();
                         cookieStore.delete('admin_session');
@@ -79,7 +90,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         </button>
                     </form>
                 </div>
-            </aside> {/* <-- C'est cette balise qui manquait ! */}
+            </aside>
 
             {/* Zone de contenu principal */}
             <main className="flex-1 overflow-y-auto">
