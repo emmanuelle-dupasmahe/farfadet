@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Phone, Mail } from 'lucide-react';
 import pool from '@/lib/db';
+import RevealContact from '@/components/RevealContact';
 
 const FacebookIcon = ({ size = 20 }: { size?: number }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -83,18 +84,18 @@ export default async function Footer() {
 
                     <div>
                         <h3 className="text-xl font-bold mb-4 border-b border-blue-800 pb-2">Renseignements</h3>
-                        <ul className="space-y-3 text-slate-300">
+                        <ul className="space-y-4 text-slate-300">
                             <li className="flex items-center gap-3">
                                 <Phone className="text-pink-500 w-5 h-5 shrink-0" />
-                                <span><strong>Sarah :</strong> <a href={`tel:${mainPhone.replace(/\s/g, '')}`} className="hover:text-white transition-colors">{mainPhone}</a></span>
+                                <span><strong>Sarah :</strong> <RevealContact value={mainPhone} type="phone" /></span>
                             </li>
                             <li className="flex items-center gap-3">
                                 <Phone className="text-pink-500 w-5 h-5 shrink-0" />
-                                <span><strong>Régis :</strong> <a href={`tel:${regisPhone.replace(/\s/g, '')}`} className="hover:text-white transition-colors">{regisPhone}</a></span>
+                                <span><strong>Régis :</strong> <RevealContact value={regisPhone} type="phone" /></span>
                             </li>
-                            <li className="flex items-center gap-3 mt-4">
+                            <li className="flex items-center gap-3">
                                 <Mail className="text-pink-500 w-5 h-5 shrink-0" />
-                                <a href={`mailto:${mainEmail}`} className="hover:text-white transition-colors break-all">{mainEmail}</a>
+                                <RevealContact value={mainEmail} type="email" />
                             </li>
                         </ul>
                     </div>
