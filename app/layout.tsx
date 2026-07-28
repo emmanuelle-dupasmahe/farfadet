@@ -15,10 +15,22 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// pour le référencement du site
+
+
+// 🪛 pour le référencement du site : Ajout du manifest et des icônes Apple
 export const metadata: Metadata = {
-  title: "Les Farfadets Vertigo",
-  description: "Association Multi-sports, sports-adaptés et bien-être.",
+  title: "Les Farfadets Vertigo - Activités et Séjours",
+  description: "Découvrez les activités sportives, de bien-être et les séjours pour enfants proposés par Les Farfadets Vertigo.",
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/icon-192.png", // Déclare le favicon pour les onglets de navigateur
+    apple: "/apple-icon.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Farfadets",
+  },
 };
 
 export default function RootLayout({
