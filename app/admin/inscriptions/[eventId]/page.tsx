@@ -2,7 +2,8 @@
 import React from 'react';
 import pool from '@/lib/db';
 import { Phone, Mail } from 'lucide-react';
-import PrintButton from '@/components/PrintButton'; // 1. On importe le nouveau bouton Client
+import PrintButton from '@/components/PrintButton';
+import ActionButtons from '@/components/admin/ActionButtons';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,7 +38,6 @@ export default async function EventRegistrationsAdminPage({ params }: Props) {
                     </p>
                 </div>
 
-                {/* 2. On utilise le composant client isolé ici */}
                 <PrintButton />
             </div>
 
@@ -54,6 +54,8 @@ export default async function EventRegistrationsAdminPage({ params }: Props) {
                                 <th className="px-6 py-4">Contact</th>
                                 <th className="px-6 py-4">Tranche d'âge</th>
                                 <th className="px-6 py-4">Date d'inscription</th>
+                                {/* Ajout de l'en-tête pour les actions */}
+                                <th className="px-6 py-4 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
@@ -78,6 +80,10 @@ export default async function EventRegistrationsAdminPage({ params }: Props) {
                                     </td>
                                     <td className="px-6 py-4 text-xs text-slate-400 font-medium">
                                         {new Date(reg.registered_at).toLocaleDateString('fr-FR')}
+                                    </td>
+                                    {/* Ajout de la cellule avec les boutons d'action */}
+                                    <td className="px-6 py-4 flex justify-end">
+                                        <ActionButtons inscriptionId={reg.id} />
                                     </td>
                                 </tr>
                             ))}
