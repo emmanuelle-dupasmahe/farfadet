@@ -11,6 +11,8 @@ import {
     CreditCard
 } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboard() {
     // Requêtes pour compter le total des inscriptions dans les deux tables
     const [siteResult]: any = await pool.query('SELECT COUNT(*) as count FROM activity_registrations');

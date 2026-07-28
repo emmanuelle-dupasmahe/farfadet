@@ -1,5 +1,5 @@
 import React from 'react';
-import { HelpCircle, Bookmark, Megaphone, Calendar, Link, ArrowRight, Layers, FileText, Users, CreditCard } from 'lucide-react';
+import { HelpCircle, Bookmark, Megaphone, Calendar, Link, ArrowRight, Layers, FileText, Users, CreditCard, Menu } from 'lucide-react';
 
 export default function AdminHelpPage() {
     return (
@@ -18,6 +18,31 @@ export default function AdminHelpPage() {
 
             {/* Grille des guides */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                {/* NOUVELLE FICHE : MENU DU HEADER & STRUCTURE DES PAGES */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+                    <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-2">
+                        <Menu size={20} className="text-indigo-600" />
+                        Menu du Header & Création de Pages
+                    </h2>
+                    <p className="text-slate-600 text-sm leading-relaxed">
+                        Pour structurer la navigation de votre site et ajouter de nouvelles rubriques depuis l'onglet <strong>Menu du Header</strong> :
+                    </p>
+                    <ol className="text-xs text-slate-600 list-decimal list-inside space-y-2 bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+                        <li>
+                            <strong>Onglet principal (Menu déroulant) :</strong> Laissez le champ URL vide et sélectionnez <em>"Aucun (en tant qu'onglet principal)"</em> dans le champ Parent.
+                        </li>
+                        <li>
+                            <strong>Sous-menu (Page fille) :</strong> Créez un nouvel élément, indiquez l'URL au format <span className="font-mono text-indigo-600">/ma-page</span>, et choisissez l'onglet parent créé à l'étape 1.
+                        </li>
+                        <li>
+                            <strong>Génération de la page :</strong> Rendez-vous ensuite dans <strong>Textes des pages</strong> pour ajouter le titre exact (<span className="font-mono">ma-page</span>) afin d'y insérer vos contenus et informations pratiques.
+                        </li>
+                    </ol>
+                    <p className="text-xs text-slate-500 italic">
+                        💡 Le lien dans le menu et la page associée fonctionnent de pair grâce au même identifiant (slug).
+                    </p>
+                </div>
 
                 {/* FICHE 1 : LE BANDEAU D'ACTUALITÉ */}
                 <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
