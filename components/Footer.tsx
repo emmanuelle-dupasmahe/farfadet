@@ -41,7 +41,7 @@ export default async function Footer() {
     const ufolepLogo = settings?.partner_ufolep_logo || "/logo_ufolep.png";
 
     return (
-        <footer className="w-full flex flex-col mt-auto">
+        <footer className="w-full flex flex-col mt-auto print:hidden">
             <div className="w-full leading-none z-10 -mb-1">
                 <svg viewBox="0 0 1440 320" className="w-full block h-24 md:h-48 object-cover object-top" preserveAspectRatio="none" aria-hidden="true">
                     <path className="fill-pink-600" d="M0,160L48,170.7C96,181,192,203,288,208C384,213,480,203,576,170.7C672,139,768,85,864,85.3C960,85,1056,139,1152,149.3C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>

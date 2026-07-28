@@ -29,7 +29,7 @@ export default async function EventRegistrationsAdminPage({ params }: Props) {
     }
 
     return (
-        <div className="p-8 max-w-6xl mx-auto space-y-6">
+        <div id="zone-impression" className="p-8 max-w-6xl mx-auto space-y-6 print:p-0 print:max-w-none print:space-y-4">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-3xl font-extrabold text-slate-900">{event.title}</h1>
@@ -38,7 +38,10 @@ export default async function EventRegistrationsAdminPage({ params }: Props) {
                     </p>
                 </div>
 
-                <PrintButton />
+                {/* Le bouton d'impression disparaît sur le papier */}
+                <div className="print:hidden">
+                    <PrintButton />
+                </div>
             </div>
 
             {registrations.length === 0 ? (
@@ -46,16 +49,16 @@ export default async function EventRegistrationsAdminPage({ params }: Props) {
                     Aucun inscrit pour le moment sur cet événement.
                 </div>
             ) : (
-                <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden print:border-none print:shadow-none">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                            <tr className="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-400 uppercase tracking-wider print:bg-slate-100">
                                 <th className="px-6 py-4">Participant</th>
                                 <th className="px-6 py-4">Contact</th>
                                 <th className="px-6 py-4">Tranche d'âge</th>
                                 <th className="px-6 py-4">Date d'inscription</th>
-                                {/* Ajout de l'en-tête pour les actions */}
-                                <th className="px-6 py-4 text-right">Actions</th>
+                                {/* La colonne Actions est masquée à l'impression */}
+                                <th className="px-6 py-4 text-right print:hidden">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
@@ -81,8 +84,8 @@ export default async function EventRegistrationsAdminPage({ params }: Props) {
                                     <td className="px-6 py-4 text-xs text-slate-400 font-medium">
                                         {new Date(reg.registered_at).toLocaleDateString('fr-FR')}
                                     </td>
-                                    {/* Ajout de la cellule avec les boutons d'action */}
-                                    <td className="px-6 py-4 flex justify-end">
+                                    {/* Les boutons d'action sont masqués à l'impression */}
+                                    <td className="px-6 py-4 flex justify-end print:hidden">
                                         <ActionButtons inscriptionId={reg.id} />
                                     </td>
                                 </tr>

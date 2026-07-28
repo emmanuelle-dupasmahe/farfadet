@@ -8,7 +8,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return (
         <div className="min-h-screen bg-slate-100 flex">
             {/* Barre latérale (Sidebar) */}
-            <aside className="w-64 bg-blue-950 text-white flex flex-col">
+            {/* <aside className="w-64 bg-blue-950 text-white flex flex-col"> */}
+            <aside className="w-64 bg-blue-950 text-white flex flex-col print:hidden">
                 <div className="p-6 border-b border-blue-900">
                     <h2 className="text-xl font-bold text-pink-500">Espace Admin</h2>
                     <p className="text-sm text-slate-400 mt-1">Les Farfadets Vertigo</p>

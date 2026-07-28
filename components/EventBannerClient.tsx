@@ -43,7 +43,7 @@ export default function EventBannerClient({ dbEvents }: { dbEvents: any[] }) {
     }, [emblaApi]);
 
     return (
-        <div className="relative bg-blue-950 text-white w-full border-y-4 border-pink-600">
+        <div className="relative bg-blue-950 text-white w-full border-y-4 border-pink-600 print:hidden">
             <div className="max-w-7xl mx-auto flex items-center px-4 py-3">
 
                 <div className="overflow-hidden flex-grow" ref={emblaRef}>

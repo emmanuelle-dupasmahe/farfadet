@@ -26,7 +26,7 @@ export default function HeaderClient({ menuItems, logoSrc }: HeaderClientProps) 
     const currentLogo = logoSrc || "/farfadet.png";
 
     return (
-        <header className="sticky top-0 z-50 w-full bg-pink-600 text-white shadow-md">
+        <header className="sticky top-0 z-50 w-full bg-pink-600 text-white shadow-md print:hidden">
             <div className="max-w-7xl mx-auto flex items-center justify-between p-4">
 
                 {/* Logo cliquable de l'association */}
