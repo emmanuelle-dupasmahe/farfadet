@@ -1,5 +1,6 @@
 import pool from "@/lib/db";
 import Link from "next/link";
+import RevealContact from "@/components/RevealContact"; // <-- Ajout de l'import
 
 export const dynamic = 'force-dynamic';
 
@@ -108,17 +109,11 @@ export default async function Home() {
       </section>
 
       {/* Section Contact de bas de page avec téléphone dynamique */}
-      <section className="py-20 bg-blue-950 text-white text-center">
-        <h2 className="text-3xl font-bold mb-2">Prêt à nous rejoindre ?</h2>
-        <p className="text-slate-300 text-lg">
-          Contactez-nous au{" "}
-          <a
-            href={`tel:${contactPhone.replace(/\s/g, '')}`}
-            className="text-pink-400 font-bold hover:underline transition-colors"
-          >
-            {contactPhone}
-          </a>
-        </p>
+      <section className="py-20 bg-blue-950 text-white text-center flex flex-col items-center">
+        <h2 className="text-3xl font-bold mb-4">Prêt à nous rejoindre ?</h2>
+        <div className="text-slate-300 text-lg flex items-center justify-center flex-wrap gap-2">
+          Contactez-nous au <RevealContact value={contactPhone} type="phone" />
+        </div>
       </section>
 
     </main>
