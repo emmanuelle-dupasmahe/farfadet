@@ -31,7 +31,7 @@ export default async function AdminPhotosPage() {
 
     // On force l'extension en .webp pour l'optimisation
     const uniqueFilename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '').split('.')[0]}.webp`;
-    const uploadDir = path.join(process.cwd(), 'public/uploads');
+    const uploadDir = path.join(/* turbopackIgnore: true */ process.cwd(), 'uploads');
 
     await fs.mkdir(uploadDir, { recursive: true });
     const filepath = path.join(uploadDir, uniqueFilename);
@@ -68,7 +68,7 @@ export default async function AdminPhotosPage() {
 
     if (src && src.startsWith('/uploads/')) {
       try {
-        const filepath = path.join(process.cwd(), 'public', src);
+        const filepath = path.join(/* turbopackIgnore: true */ process.cwd(), src.startsWith('/') ? src.slice(1) : src);
         await fs.unlink(filepath);
       } catch (error) {
         console.error("Erreur lors de la suppression du fichier:", error);

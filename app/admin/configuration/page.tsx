@@ -43,7 +43,7 @@ export default async function AdminSettingsPage(props: {
         let ffsaLogoPath = formData.get('current_ffsa_logo') as string;
         let ufolepLogoPath = formData.get('current_ufolep_logo') as string;
 
-        const uploadDir = path.join(process.cwd(), 'public/uploads');
+        const uploadDir = path.join(/* turbopackIgnore: true */ process.cwd(), 'uploads');
         await fs.mkdir(uploadDir, { recursive: true });
 
         // Traitement du logo de l'Association
