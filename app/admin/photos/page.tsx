@@ -1,11 +1,12 @@
 import React from 'react';
 import pool from '@/lib/db';
 import { revalidatePath } from 'next/cache';
-import { Trash2, PlusCircle, Image as ImageIcon, Tag } from 'lucide-react';
+import { Trash2, PlusCircle, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { promises as fs } from 'fs';
 import path from 'path';
-import sharp from 'sharp'; // Import de la librairie d'optimisation d'images
+import sharp from 'sharp';
+import UploadForm from '@/components/admin/UploadForm';
 
 export const dynamic = 'force-dynamic';
 
@@ -91,79 +92,15 @@ export default async function AdminPhotosPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        {/* Formulaire d'ajout */}
+        {/* Formulaire d'ajout géré côté client */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 h-fit">
           <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
             <PlusCircle size={20} className="text-pink-600" />
             Ajouter une photo
           </h2>
 
-          <form action={addPhoto} className="space-y-4">
+          <UploadForm addPhoto={addPhoto} pages={pages} />
 
-            {/* Menu déroulant DYNAMIQUE rattaché aux pages réelles */}
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-              <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
-                <Tag size={16} className="text-pink-600" />
-                Activité concernée
-              </label>
-              <select
-                name="category"
-                required
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-slate-800 text-sm bg-white cursor-pointer"
-              >
-                {pages.map((p: any) => (
-                  <option key={p.slug} value={p.slug}>
-                    📌 {p.title}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Fichier image
-              </label>
-              <input
-                type="file"
-                name="file"
-                accept="image/*"
-                required
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-slate-800 text-sm bg-slate-50 cursor-pointer"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Description (alt) <span className="text-pink-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="alt"
-                required
-                placeholder="ex: Un jeune grimpeur sourit"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-slate-800 text-sm"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Légende sur le carrousel (Optionnelle)
-              </label>
-              <input
-                type="text"
-                name="caption"
-                placeholder="ex: Stage d'été multisports"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-slate-800 text-sm"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2.5 px-4 rounded-lg transition-colors text-sm mt-2"
-            >
-              Uploader l'image
-            </button>
-          </form>
         </div>
 
         {/* Liste des photos */}
@@ -179,7 +116,6 @@ export default async function AdminPhotosPage() {
               {rows.map((photo: any) => (
                 <div key={photo.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
 
-                  {/* AJOUT DE 'unoptimized' ICI POUR LES MINIATURES DE L'ADMIN */}
                   <div className="relative h-44 w-full bg-slate-100">
                     <Image
                       src={photo.src}
@@ -187,7 +123,7 @@ export default async function AdminPhotosPage() {
                       fill
                       sizes="(max-width: 768px) 100vw, 300px"
                       className="object-cover"
-                      unoptimized // Demande à Next.js de ne pas recalculer cette miniature
+                      unoptimized
                     />
                     <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-slate-800 uppercase shadow-sm border border-white/50">
                       {photo.category}

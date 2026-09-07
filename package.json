@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "browser-image-compression": "^2.0.2",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
+    "heic2any": "^0.0.4",
     "lucide-react": "^1.17.0",
     "mysql2": "^3.22.5",
     "next": "16.2.9",
