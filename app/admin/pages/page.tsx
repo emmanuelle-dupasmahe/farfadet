@@ -13,8 +13,14 @@ export default async function AdminPagesManagement(props: {
     const params = await props.searchParams;
     const editSlug = params?.edit;
 
-    // 1. Récupérer toutes les pages dynamiques
-    const [rows] = await pool.query('SELECT * FROM custom_pages ORDER BY created_at DESC') as any;
+    // 1. Récupérer toutes les pages dynamiques ET compter le nombre d'événements liés via activity_name
+    const [rows] = await pool.query(`
+        SELECT p.*, COUNT(e.id) as events_count 
+        FROM custom_pages p 
+        LEFT JOIN activity_events e ON p.slug = e.activity_name AND e.is_active = 1
+        GROUP BY p.slug 
+        ORDER BY p.created_at DESC
+    `) as any;
 
     // 2. Récupérer tous les événements disponibles pour le menu déroulant
     const [eventsRows] = await pool.query('SELECT id, title, activity_name FROM activity_events WHERE is_active = 1 ORDER BY event_date DESC') as any;
@@ -26,14 +32,14 @@ export default async function AdminPagesManagement(props: {
         return acc;
     }, {});
 
-    // Trouver la page à éditer (soit l'accueil, soit une page dynamique)
+    // Trouver la page à éditer
     let pageToEdit = null;
     if (editSlug === 'accueil') {
         pageToEdit = {
             slug: 'accueil',
             title: homeContent.hero_title || "Viens défier ton mental !",
             subtitle: homeContent.hero_subtitle || "",
-            content: "static_home", // Valeur fictive pour passer la validation
+            content: "static_home",
             practical_info: "",
             active_event_id: null
         };
@@ -41,10 +47,10 @@ export default async function AdminPagesManagement(props: {
         pageToEdit = rows.find((p: any) => p.slug === editSlug) || null;
     }
 
-    // Filtrer les événements créés par Régis qui correspondent au slug en cours d'édition
+    // Filtrer les événements qui correspondent au slug en cours d'édition
     const filteredEvents = eventsRows.filter((e: any) => e.activity_name === pageToEdit?.slug);
 
-    // 4. Action du serveur : Sauvegarder (Ajout / Modification)
+    // 4. Action du serveur : Sauvegarder
     async function savePage(formData: FormData) {
         'use server';
 
@@ -56,13 +62,11 @@ export default async function AdminPagesManagement(props: {
         const content = formData.get('content') as string;
         const practical_info = formData.get('practical_info') as string;
 
-        // Récupération de l'ID de l'événement choisi
         const activeEventRaw = formData.get('active_event_id') as string;
         const active_event_id = activeEventRaw && activeEventRaw !== "" ? parseInt(activeEventRaw, 10) : null;
 
         if (!slug || !title || !content) return;
 
-        // CAS SPÉCIAL : Mise à jour de la page d'accueil
         if (slug === 'accueil' || oldSlug === 'accueil') {
             await pool.query(
                 'UPDATE page_contents SET content_value = ? WHERE page_slug = "accueil" AND content_key = "hero_title"',
@@ -79,7 +83,6 @@ export default async function AdminPagesManagement(props: {
             return;
         }
 
-        // CAS STANDARD : Pages dynamiques d'activités
         if (isEdit === 'true' && oldSlug) {
             await pool.query(
                 'UPDATE custom_pages SET slug = ?, title = ?, subtitle = ?, content = ?, practical_info = ?, active_event_id = ? WHERE slug = ?',
@@ -111,7 +114,7 @@ export default async function AdminPagesManagement(props: {
         'use server';
 
         const slug = formData.get('slug');
-        if (!slug || slug === 'accueil') return; // Sécurité : impossible de supprimer l'accueil
+        if (!slug || slug === 'accueil') return;
 
         await pool.query('DELETE FROM custom_pages WHERE slug = ?', [slug]);
 
@@ -122,7 +125,6 @@ export default async function AdminPagesManagement(props: {
 
     return (
         <div className="p-8 max-w-7xl mx-auto">
-
             <div className="flex items-center gap-3 mb-8">
                 <div className="bg-blue-600 p-2 rounded-xl text-white">
                     <FileText size={28} />
@@ -131,8 +133,6 @@ export default async function AdminPagesManagement(props: {
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-
-                {/* Formulaire (Ajout ou Édition) */}
                 <div className={`p-6 rounded-2xl shadow-sm border h-fit xl:col-span-1 ${pageToEdit ? 'bg-amber-50 border-amber-200' : 'bg-white border-slate-200'}`}>
                     <div className="flex items-center justify-between mb-6">
                         <h2 className={`text-xl font-bold flex items-center gap-2 ${pageToEdit ? 'text-amber-800' : 'text-slate-800'}`}>
@@ -177,7 +177,6 @@ export default async function AdminPagesManagement(props: {
                             <input type="text" name="subtitle" defaultValue={pageToEdit?.subtitle || ''} placeholder="ex: Découverte en milieu vertical..." className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white text-slate-800 focus:ring-2 focus:ring-blue-500" />
                         </div>
 
-                        {/* Éléments masqués s'il s'agit de la page d'accueil générale */}
                         {pageToEdit?.slug !== 'accueil' ? (
                             <>
                                 <div>
@@ -190,7 +189,6 @@ export default async function AdminPagesManagement(props: {
                                     <textarea name="practical_info" rows={3} defaultValue={pageToEdit?.practical_info || ''} placeholder="Horaires, tarifs, matériel..." className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white text-slate-800 resize-none focus:ring-2 focus:ring-blue-500" />
                                 </div>
 
-                                {/* MENU DÉROULANT DES ÉVÉNEMENTS LIÉS */}
                                 <div className="pt-2 border-t border-slate-200/60">
                                     <label className="block text-sm font-semibold text-slate-700 mb-1 flex items-center gap-1.5">
                                         <Calendar size={16} className="text-blue-500" /> Événement exceptionnel rattaché
@@ -222,11 +220,9 @@ export default async function AdminPagesManagement(props: {
                     </form>
                 </div>
 
-                {/* Liste des pages publiées */}
                 <div className="xl:col-span-2 space-y-4">
                     <h2 className="text-xl font-bold text-slate-800">Pages du site internet</h2>
 
-                    {/* BLOC FIXE POUR LA PAGE D'ACCUEIL */}
                     <div className="bg-slate-100 rounded-xl border-2 border-dashed border-slate-300 p-5 flex items-center justify-between gap-4 shadow-sm">
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
@@ -247,7 +243,6 @@ export default async function AdminPagesManagement(props: {
 
                     <hr className="border-slate-200 my-4" />
 
-                    {/* BLOC DYNAMIQUE DES PAGES D'ACTIVITÉS */}
                     <h3 className="text-lg font-semibold text-slate-700">Pages d'activités personnalisées ({rows.length})</h3>
 
                     {rows.length === 0 ? (
@@ -261,12 +256,13 @@ export default async function AdminPagesManagement(props: {
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 flex-wrap">
                                             <h3 className="font-bold text-slate-800 text-lg truncate">{page.title}</h3>
-                                            <a href={`/${page.slug}`} target="_blank" className="text-xs text-blue-600 font-mono bg-blue-50 px-2 py-0.5 rounded-sm hover:underline">
+                                            <a href={`/${page.slug}`} target="_blank" rel="noreferrer" className="text-xs text-blue-600 font-mono bg-blue-50 px-2 py-0.5 rounded-sm hover:underline">
                                                 /{page.slug}
                                             </a>
-                                            {page.active_event_id && (
+                                            {/* NOUVEAU BADGE DYNAMIQUE */}
+                                            {page.events_count > 0 && (
                                                 <span className="text-[10px] font-bold uppercase tracking-wide bg-emerald-50 border border-emerald-200 text-emerald-700 px-2 py-0.5 rounded-full">
-                                                    Formulaire Actif
+                                                    {page.events_count} Formulaire(s) Actif(s)
                                                 </span>
                                             )}
                                         </div>
@@ -289,7 +285,6 @@ export default async function AdminPagesManagement(props: {
                         </div>
                     )}
                 </div>
-
             </div>
         </div>
     );

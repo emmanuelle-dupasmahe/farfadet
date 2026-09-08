@@ -7,7 +7,7 @@ export default async function EventBanner() {
 
     try {
         // On récupère les 3 derniers événements ajoutés
-        const [rows] = await pool.query('SELECT * FROM events ORDER BY id DESC LIMIT 3') as any;
+        const [rows] = await pool.query('SELECT * FROM events ORDER BY id DESC LIMIT 10') as any;
         activeEvents = rows;
     } catch (error) {
         console.error("Erreur lors de la récupération des événements :", error);

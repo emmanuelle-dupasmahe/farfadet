@@ -2,7 +2,7 @@ import React from 'react';
 import pool from '@/lib/db';
 import { notFound } from 'next/navigation';
 import PageCarousel from '@/components/PageCarousel';
-import ActivityEventRegistration from '@/components/ActivityEventRegistration'; 
+import ActivityEventRegistration from '@/components/ActivityEventRegistration';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,17 +13,9 @@ interface PageProps {
 export default async function DynamicActivityPage({ params }: PageProps) {
     const { slug } = await params;
 
-    // 1. Récupérer les données textuelles de la page ET l'événement lié s'il existe et est actif
+    // 1. Récupérer uniquement les données textuelles de la page
     const [pageRows] = await pool.query(`
-        SELECT 
-            p.*, 
-            e.id AS event_id, 
-            e.title AS event_title, 
-            e.event_date, 
-            e.description AS event_description
-        FROM custom_pages p
-        LEFT JOIN activity_events e ON p.active_event_id = e.id AND e.is_active = 1
-        WHERE p.slug = ?
+        SELECT * FROM custom_pages WHERE slug = ?
     `, [slug]) as any;
 
     if (pageRows.length === 0) {
@@ -32,18 +24,17 @@ export default async function DynamicActivityPage({ params }: PageProps) {
 
     const page = pageRows[0];
 
-    // Reconstruction de l'objet event s'il y en a un de rattaché
-    const attachedEvent = page.event_id ? {
-        id: page.event_id,
-        title: page.event_title,
-        event_date: page.event_date,
-        description: page.event_description
-    } : null;
+    // 2. Récupérer TOUS les événements actifs liés à cette page
+    
+    const [eventRows] = await pool.query(`
+        SELECT id, title AS event_title, event_date, description AS event_description
+        FROM activity_events 
+        WHERE activity_name = ? AND is_active = 1
+        ORDER BY event_date ASC
+    `, [slug]) as any;
 
-    // 2. Récupérer les photos liées à cette catégorie spécifique dans la table 'photos'
+    // 3. Récupérer les photos liées à cette catégorie spécifique
     const [photoRows] = await pool.query('SELECT src FROM photos WHERE category = ? ORDER BY id DESC', [slug]) as any;
-
-    // Transformation du résultat en un tableau simple d'URLs de chaînes de caractères
     const carouselImages = photoRows.map((photo: any) => photo.src);
 
     return (
@@ -64,12 +55,9 @@ export default async function DynamicActivityPage({ params }: PageProps) {
 
             {/* Zone de contenu principale */}
             <div className="max-w-5xl mx-auto px-4 py-12">
-
-                {/* Carrousel alimenté directement par le module photo existant */}
                 {carouselImages.length > 0 && <PageCarousel images={carouselImages} />}
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-
                     {/* Colonne Description */}
                     <div className="md:col-span-2 bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
                         <h2 className="text-2xl font-bold text-slate-800 mb-4">Présentation de l'activité</h2>
@@ -87,15 +75,23 @@ export default async function DynamicActivityPage({ params }: PageProps) {
                             </p>
                         </div>
                     )}
-
                 </div>
-
             </div>
 
-            {/* FORMULAIRE DES INSCRIPTIONS */}
-            {attachedEvent && (
-                <section id="inscription" className="max-w-5xl mx-auto px-4 pb-12">
-                    <ActivityEventRegistration event={attachedEvent} />
+            {/* FORMULAIRE DES INSCRIPTIONS : Boucle d'affichage dynamique */}
+            {eventRows.length > 0 && (
+                <section id="inscription" className="max-w-5xl mx-auto px-4 pb-12 space-y-8">
+                    {eventRows.map((event: any) => (
+                        <ActivityEventRegistration
+                            key={event.id}
+                            event={{
+                                id: event.id,
+                                title: event.event_title,
+                                event_date: event.event_date,
+                                description: event.event_description
+                            }}
+                        />
+                    ))}
                 </section>
             )}
         </main>
