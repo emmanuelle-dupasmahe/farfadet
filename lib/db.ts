@@ -5,10 +5,11 @@ const globalForDb = globalThis as unknown as { dbPool: mysql.Pool };
 
 // On réutilise le pool existant s'il y en a un, sinon on le crée
 const pool = globalForDb.dbPool || mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '', // Mets ton mot de passe s'il y en a un sur Laragon
-    database: 'farfadets_db',
+    // Identifiants lus dans .env.local (non versionné) ; valeurs par défaut pour Laragon
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'farfadets_db',
     waitForConnections: true,
     connectionLimit: 5, // On limite à 5 connexions max en local pour être tranquille
     queueLimit: 0
