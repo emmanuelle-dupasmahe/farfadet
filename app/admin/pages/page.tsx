@@ -3,24 +3,35 @@ import React from 'react';
 import pool from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { FileText, Save, Trash2, PlusCircle, Pencil, X, Home, Calendar } from 'lucide-react';
+import { FileText, Save, Trash2, PlusCircle, Pencil, X, Home, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminPagesManagement(props: {
-    searchParams: Promise<{ edit?: string }>;
+    searchParams: Promise<{ edit?: string, page?: string }>;
 }) {
     const params = await props.searchParams;
     const editSlug = params?.edit;
 
-    // 1. Récupérer toutes les pages dynamiques ET compter le nombre d'événements liés via activity_name
+    // GESTION DE LA PAGINATION
+    const currentPage = Number(params?.page) || 1;
+    const itemsPerPage = 10;
+    const offset = (currentPage - 1) * itemsPerPage;
+
+    const [countResult] = await pool.query('SELECT COUNT(*) as count FROM custom_pages') as any;
+    const totalPagesCount = countResult[0].count;
+    const totalPages = Math.ceil(totalPagesCount / itemsPerPage);
+
+    // 1. Récupérer les pages dynamiques avec pagination ET compter le nombre d'événements liés
     const [rows] = await pool.query(`
         SELECT p.*, COUNT(e.id) as events_count 
         FROM custom_pages p 
         LEFT JOIN activity_events e ON p.slug = e.activity_name AND e.is_active = 1
         GROUP BY p.slug 
         ORDER BY p.created_at DESC
-    `) as any;
+        LIMIT ? OFFSET ?
+    `, [itemsPerPage, offset]) as any;
 
     // 2. Récupérer tous les événements disponibles pour le menu déroulant
     const [eventsRows] = await pool.query('SELECT id, title, activity_name FROM activity_events WHERE is_active = 1 ORDER BY event_date DESC') as any;
@@ -32,7 +43,7 @@ export default async function AdminPagesManagement(props: {
         return acc;
     }, {});
 
-    // Trouver la page à éditer
+    // Trouver la page à éditer (Nécessite une requête dédiée au cas où la page éditée ne soit pas dans les 'rows' de la pagination actuelle)
     let pageToEdit = null;
     if (editSlug === 'accueil') {
         pageToEdit = {
@@ -44,7 +55,8 @@ export default async function AdminPagesManagement(props: {
             active_event_id: null
         };
     } else if (editSlug) {
-        pageToEdit = rows.find((p: any) => p.slug === editSlug) || null;
+        const [editResult] = await pool.query('SELECT * FROM custom_pages WHERE slug = ?', [editSlug]) as any;
+        pageToEdit = editResult.length > 0 ? editResult[0] : null;
     }
 
     // Filtrer les événements qui correspondent au slug en cours d'édition
@@ -221,7 +233,12 @@ export default async function AdminPagesManagement(props: {
                 </div>
 
                 <div className="xl:col-span-2 space-y-4">
-                    <h2 className="text-xl font-bold text-slate-800">Pages du site internet</h2>
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-xl font-bold text-slate-800">Pages du site internet ({totalPagesCount} au total)</h2>
+                        <span className="bg-slate-100 text-slate-600 py-1 px-3 rounded-full text-sm font-semibold">
+                            Page {currentPage} / {totalPages || 1}
+                        </span>
+                    </div>
 
                     <div className="bg-slate-100 rounded-xl border-2 border-dashed border-slate-300 p-5 flex items-center justify-between gap-4 shadow-sm">
                         <div className="flex-1 min-w-0">
@@ -243,11 +260,11 @@ export default async function AdminPagesManagement(props: {
 
                     <hr className="border-slate-200 my-4" />
 
-                    <h3 className="text-lg font-semibold text-slate-700">Pages d'activités personnalisées ({rows.length})</h3>
+                    <h3 className="text-lg font-semibold text-slate-700">Pages d'activités personnalisées</h3>
 
                     {rows.length === 0 ? (
                         <div className="bg-white p-8 rounded-2xl text-center border border-slate-200 text-slate-500">
-                            Aucune page d'activité n'est présente.
+                            Aucune page d'activité n'est présente sur cette page.
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 gap-3">
@@ -259,7 +276,6 @@ export default async function AdminPagesManagement(props: {
                                             <a href={`/${page.slug}`} target="_blank" rel="noreferrer" className="text-xs text-blue-600 font-mono bg-blue-50 px-2 py-0.5 rounded-sm hover:underline">
                                                 /{page.slug}
                                             </a>
-                                            {/* NOUVEAU BADGE DYNAMIQUE */}
                                             {page.events_count > 0 && (
                                                 <span className="text-[10px] font-bold uppercase tracking-wide bg-emerald-50 border border-emerald-200 text-emerald-700 px-2 py-0.5 rounded-full">
                                                     {page.events_count} Formulaire(s) Actif(s)
@@ -284,6 +300,42 @@ export default async function AdminPagesManagement(props: {
                             ))}
                         </div>
                     )}
+
+                    {/* CONTRÔLES DE PAGINATION */}
+                    {totalPages > 1 && (
+                        <div className="flex items-center justify-center gap-4 mt-6 pt-4">
+                            {currentPage > 1 ? (
+                                <Link
+                                    href={`/admin/pages?page=${currentPage - 1}`}
+                                    className="flex items-center gap-1 bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-50 hover:text-blue-600 transition-colors font-medium text-sm shadow-sm"
+                                >
+                                    <ChevronLeft size={16} /> Précédent
+                                </Link>
+                            ) : (
+                                <span className="flex items-center gap-1 bg-slate-50 border border-slate-200 text-slate-400 px-4 py-2 rounded-lg cursor-not-allowed font-medium text-sm">
+                                    <ChevronLeft size={16} /> Précédent
+                                </span>
+                            )}
+
+                            <span className="text-sm font-bold text-slate-600">
+                                {currentPage} sur {totalPages}
+                            </span>
+
+                            {currentPage < totalPages ? (
+                                <Link
+                                    href={`/admin/pages?page=${currentPage + 1}`}
+                                    className="flex items-center gap-1 bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-50 hover:text-blue-600 transition-colors font-medium text-sm shadow-sm"
+                                >
+                                    Suivant <ChevronRight size={16} />
+                                </Link>
+                            ) : (
+                                <span className="flex items-center gap-1 bg-slate-50 border border-slate-200 text-slate-400 px-4 py-2 rounded-lg cursor-not-allowed font-medium text-sm">
+                                    Suivant <ChevronRight size={16} />
+                                </span>
+                            )}
+                        </div>
+                    )}
+
                 </div>
             </div>
         </div>

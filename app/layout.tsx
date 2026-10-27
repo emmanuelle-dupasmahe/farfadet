@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -15,7 +15,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
+// 🪛 Interdit aux navigateurs mobiles de forcer un "Mode Sombre" artificiel
+export const viewport: Viewport = {
+  colorScheme: 'light',
+};
 
 // 🪛 pour le référencement du site : Ajout du manifest et des icônes Apple
 export const metadata: Metadata = {

@@ -137,21 +137,21 @@ export default async function AdminEventsPage(props: {
                             {eventToEdit && <input type="hidden" name="id" value={eventToEdit.id} />}
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Date ou Mention</label>
-                                <input type="text" name="date_text" defaultValue={eventToEdit?.date_text || ''} placeholder="ex: URGENT, NOVEMBRE 2026" className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm bg-white outline-none" />
+                                <input type="text" name="date_text" defaultValue={eventToEdit?.date_text || ''} placeholder="ex: URGENT, NOVEMBRE 2026" className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm bg-white outline-none !text-slate-800 placeholder:!text-slate-400" />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Message principal <span className="text-pink-500">*</span></label>
-                                <textarea name="main_text" required defaultValue={eventToEdit?.main_text || ''} rows={3} placeholder="ex: Inscriptions ouvertes pour le stage de Toussaint" className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm resize-none bg-white outline-none" />
+                                <textarea name="main_text" required defaultValue={eventToEdit?.main_text || ''} rows={3} placeholder="ex: Inscriptions ouvertes pour le stage de Toussaint" className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm resize-none bg-white outline-none !text-slate-800 placeholder:!text-slate-400" />
                             </div>
                             <div className="p-4 bg-white/60 rounded-lg border border-slate-200/60 space-y-3">
                                 <h3 className="text-xs font-bold text-slate-700">Bouton d'action (Optionnel)</h3>
                                 <div>
                                     <label className="block text-xs font-medium text-slate-600 mb-1">Texte du bouton</label>
-                                    <input type="text" name="link_text" defaultValue={eventToEdit?.link_text || ''} placeholder="ex: S'inscrire" className="w-full px-3 py-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm bg-white outline-none" />
+                                    <input type="text" name="link_text" defaultValue={eventToEdit?.link_text || ''} placeholder="ex: S'inscrire" className="w-full px-3 py-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm bg-white outline-none !text-slate-800 placeholder:!text-slate-400" />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-medium text-slate-600 mb-1">Lien (URL)</label>
-                                    <input type="text" name="link_url" defaultValue={eventToEdit?.link_url || ''} placeholder="https://..." className="w-full px-3 py-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm bg-white outline-none" />
+                                    <input type="text" name="link_url" defaultValue={eventToEdit?.link_url || ''} placeholder="https://..." className="w-full px-3 py-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm bg-white outline-none !text-slate-800 placeholder:!text-slate-400" />
                                 </div>
                             </div>
                             <button type="submit" className={`w-full flex items-center justify-center gap-2 font-bold py-2.5 px-4 rounded-lg transition-colors text-sm text-white ${eventToEdit ? 'bg-amber-600 hover:bg-amber-700' : 'bg-blue-600 hover:bg-blue-700'}`}>
@@ -219,7 +219,7 @@ export default async function AdminEventsPage(props: {
                         <form action={createActivityEvent} className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Activité ciblée</label>
-                                <select name="activity_name" required className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white text-slate-800 focus:ring-2 focus:ring-pink-500 outline-none">
+                                <select name="activity_name" required className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white text-slate-800 focus:ring-2 focus:ring-pink-500 outline-none !text-slate-800">
                                     <option value="">-- Choisir l'activité --</option>
                                     <option value="escalade">Escalade</option>
                                     <option value="kayak">Kayak & Paddle</option>
@@ -235,22 +235,22 @@ export default async function AdminEventsPage(props: {
 
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Nom du stage / de l'événement</label>
-                                <input type="text" name="title" required placeholder="ex: Journée Découverte Falaise" className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white text-slate-800 focus:ring-2 focus:ring-pink-500 outline-none" />
+                                <input type="text" name="title" required placeholder="ex: Journée Découverte Falaise" className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white text-slate-800 focus:ring-2 focus:ring-pink-500 outline-none !text-slate-800 placeholder:!text-slate-400" />
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Date planifiée</label>
-                                <input type="date" name="event_date" required className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white text-slate-800 focus:ring-2 focus:ring-pink-500 outline-none" />
+                                <input type="date" name="event_date" required className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white text-slate-800 focus:ring-2 focus:ring-pink-500 outline-none !text-slate-800 placeholder:!text-slate-400" />
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Nombre max de participants (Optionnel)</label>
-                                <input type="number" name="max_places" placeholder="ex: 12 (vide si illimité)" className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white text-slate-800 focus:ring-2 focus:ring-pink-500 outline-none" />
+                                <input type="number" name="max_places" placeholder="ex: 12 (vide si illimité)" className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white text-slate-800 focus:ring-2 focus:ring-pink-500 outline-none !text-slate-800 placeholder:!text-slate-400" />
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Description & Organisation</label>
-                                <textarea name="description" rows={4} placeholder="Rendez-vous à 9h, matériel requis, pique nique..." className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white text-slate-800 resize-none focus:ring-2 focus:ring-pink-500 outline-none" />
+                                <textarea name="description" rows={4} placeholder="Rendez-vous à 9h, matériel requis, pique nique..." className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white text-slate-800 resize-none focus:ring-2 focus:ring-pink-500 outline-none !text-slate-800 placeholder:!text-slate-400" />
                             </div>
 
                             <button type="submit" className="w-full flex items-center justify-center gap-2 font-bold py-2.5 px-4 rounded-lg transition-colors text-sm text-white bg-pink-600 hover:bg-pink-700">
