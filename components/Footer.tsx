@@ -112,7 +112,17 @@ export default async function Footer() {
 
                 {/* --- ZONE MODIFIÉE POUR LE LIEN ADMIN DISCRET --- */}
                 <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-blue-900 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-400">
-                    <p>{copyright}</p>
+                    <p>
+                        {copyright} • Site réalisé par{' '}
+                        <a
+                            href="https://ma-nux.fr"
+                            target="_blank"
+                            rel="noopener"
+                            className="hover:text-pink-400 underline transition-colors"
+                        >
+                            Ma-nux
+                        </a>
+                    </p>
 
                     <Link
                         href="/admin"
