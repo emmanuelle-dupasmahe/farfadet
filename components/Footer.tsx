@@ -118,7 +118,7 @@ export default async function Footer() {
                             href="https://ma-nux.fr"
                             target="_blank"
                             rel="noopener"
-                            className="hover:text-pink-400 underline transition-colors"
+                            className="hover:text-pink-400 transition-colors"
                         >
                             Ma-nux
                         </a>
